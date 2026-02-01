@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valentine 💌</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #ffe6eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    /* ---------- ENVELOPE ---------- */
+    .envelope-screen {
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .envelope {
+      width: 160px;
+      height: 110px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      position: relative;
+      animation: bounce 1.5s infinite;
+      margin: auto;
+    }
+
+    .envelope::before {
+      content: "💌";
+      font-size: 42px;
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* ---------- QUESTION BOX ---------- */
+    .container {
+      display: none;
+      width: 360px;
+      height: 220px;
+      background: white;
+      border-radius: 20px;
+      text-align: center;
+      padding-top: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 5;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+    }
+
+    button {
+      padding: 10px 26px;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #yes {
+      background: #ff4d6d;
+      color: white;
+      margin-right: 10px;
+    }
+
+    #no {
+      background: #999;
+      color: white;
+      position: absolute;
+    }
+
+    /* ---------- HEART RAIN ---------- */
+    .heart {
+      position: fixed;
+      top: -20px;
+      font-size: 20px;
+      color: #ff4d6d;
+      animation: fall linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Envelope -->
+  <div class="envelope-screen" id="envelopeScreen">
+    <div class="envelope"></div>
+    <p>You have a letter 💖<br><small>(click to open)</small></p>
+  </div>
+
+  <!-- Valentine Box -->
+  <div class="container" id="box">
+    <h2>Liora, will you be my Valentine? 💘</h2>
+    <button id="yes">Yes 💖</button>
+    <button id="no">No 🙃</button>
+  </div>
+
+  <!-- Background Music -->
+  <audio id="bgMusic" src="bg.mp3" loop preload="auto"></audio>
+
+  <script>
+    const envelopeScreen = document.getElementById("envelopeScreen");
+    const box = document.getElementById("box");
+    const bgMusic = document.getElementById("bgMusic");
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+
+    /* 🔓 AUDIO UNLOCK (THIS IS THE IMPORTANT PART) */
+    function startMusic() {
+      bgMusic.volume = 0.7;
+      bgMusic.play().catch(err => {
+        console.log("Audio blocked:", err);
+      });
+    }
+
+    /* Envelope click = guaranteed user interaction */
+    envelopeScreen.addEventListener("click", () => {
+      startMusic();                 // 🎵 MUSIC STARTS HERE
+      envelopeScreen.style.display = "none";
+      box.style.display = "block";
+    });
+
+    /* NO button runs away */
+    function moveNo() {
+      const maxX = box.clientWidth - noBtn.offsetWidth;
+      const maxY = box.clientHeight - noBtn.offsetHeight;
+      noBtn.style.left = Math.random() * maxX + "px";
+      noBtn.style.top = Math.random() * maxY + "px";
+    }
+
+    noBtn.addEventListener("mouseover", moveNo);
+    noBtn.addEventListener("click", moveNo);
+    noBtn.addEventListener("touchstart", moveNo);
+
+    /* YES clicked */
+    yesBtn.addEventListener("click", () => {
+      box.innerHTML = "<h2>YAY!!! 💕🥰<br>Happy Valentine’s Day!</h2>";
+      startHearts();
+    });
+
+    /* Continuous falling hearts */
+    function startHearts() {
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "💖";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.animationDuration = (2 + Math.random() * 3) + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+      }, 250);
+    }
+  </script>
+
+</body>
+</html>
